@@ -89,6 +89,9 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
                 if (event.data === window.YT.PlayerState.ENDED) {
                   setIsFinished(true);
                   onFinish();
+                  // 웹뷰에 완료 메시지 전송
+                  window.parent.postMessage("videoCompleted", "*");
+                  alert("시청 완료! 웹뷰에 메시지 전송됨");
                 }
               },
             },
@@ -121,6 +124,9 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
             if (event.data === window.YT.PlayerState.ENDED) {
               setIsFinished(true);
               onFinish();
+              // 웹뷰에 완료 메시지 전송
+              window.parent.postMessage("videoCompleted", "*");
+              alert("시청 완료! 웹뷰에 메시지 전송됨");
             }
           },
         },
