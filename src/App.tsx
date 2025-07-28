@@ -91,7 +91,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
                   onFinish();
                   // 웹뷰에 완료 메시지 전송
                   window.parent.postMessage("videoCompleted", "*");
-                  alert("시청 완료! 웹뷰에 메시지 전송됨");
+                  console.log("시청 완료! 웹뷰에 메시지 전송됨");
                 }
               },
             },
@@ -126,7 +126,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
               onFinish();
               // 웹뷰에 완료 메시지 전송
               window.parent.postMessage("videoCompleted", "*");
-              alert("시청 완료! 웹뷰에 메시지 전송됨");
+              console.log("시청 완료! 웹뷰에 메시지 전송됨");
             }
           },
         },
@@ -139,12 +139,8 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
     const handleMessage = (event: MessageEvent) => {
       console.log("postMessage 받음:", event.data);
 
-      // postMessage 받으면 얼럿 띄우기
-      alert("postMessage 받았습니다: " + event.data);
-
       if (event.data === "startPlayback") {
         console.log("React Native에서 재생 요청 받음");
-        alert("재생 시작합니다!");
         handleStartPlayback();
       }
     };
