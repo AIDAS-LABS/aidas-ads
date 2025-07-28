@@ -49,7 +49,6 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
 }) => {
   const playerRef = useRef<HTMLDivElement>(null);
   const playerInstanceRef = useRef<YouTubePlayer | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [hasStarted, setHasStarted] = useState<boolean>(false);
 
@@ -129,7 +128,25 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
     }
   }, [videoId, onFinish]);
 
-  // 사용자 클릭으로 재생 시작
+  // postMessage 리스너 추가
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      console.log("postMessage 받음:", event.data);
+
+      if (event.data === "startPlayback") {
+        console.log("React Native에서 재생 요청 받음");
+        handleStartPlayback();
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []);
+
+  // 재생 시작 함수
   const handleStartPlayback = () => {
     if (playerInstanceRef.current && !hasStarted) {
       setHasStarted(true);
@@ -176,83 +193,37 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
   }
 
   return (
-    <>
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100vw",
-          height: "100vh",
-          backgroundColor: "#000",
-        }}
-      >
-        <div ref={playerRef} style={{ width: "100%", height: "100%" }} />
-      </div>
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: "#000",
+      }}
+    >
+      <div ref={playerRef} style={{ width: "100%", height: "100%" }} />
 
-      <div
-        ref={containerRef}
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100vw",
-          height: "100vh",
-          backgroundColor: "transparent",
-          cursor: "pointer",
-          zIndex: 10,
-        }}
-        onClick={handleStartPlayback}
-      >
-        {!hasStarted && (
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: "rgba(0, 0, 0, 0.7)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              zIndex: 10,
-            }}
-          >
-            <div
-              style={{
-                color: "white",
-                fontSize: "24px",
-                fontWeight: "bold",
-                textAlign: "center",
-                padding: "20px",
-              }}
-            >
-              클릭하여 재생 시작
-            </div>
-          </div>
-        )}
-
-        {isFinished && (
-          <div
-            style={{
-              position: "absolute",
-              bottom: "50px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              padding: "10px 20px",
-              backgroundColor: "rgba(230, 255, 230, 0.9)",
-              borderRadius: "5px",
-              fontSize: "18px",
-              fontWeight: "bold",
-              color: "#006600",
-            }}
-          >
-            ✅ 시청 완료!
-          </div>
-        )}
-      </div>
-    </>
+      {isFinished && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: "50px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            padding: "10px 20px",
+            backgroundColor: "rgba(230, 255, 230, 0.9)",
+            borderRadius: "5px",
+            fontSize: "18px",
+            fontWeight: "bold",
+            color: "#006600",
+          }}
+        >
+          ✅ 시청 완료!
+        </div>
+      )}
+    </div>
   );
 };
 
