@@ -141,6 +141,12 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
   // isFinished가 true일 때 한 번만 메시지 보내기
   useEffect(() => {
     if (isFinished) {
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage(
+          JSON.stringify({ type: "videoCompleted" })
+        );
+      }
+
       setIsFinished(false);
     }
   }, [isFinished]);
@@ -249,6 +255,9 @@ declare global {
       };
     };
     onYouTubeIframeAPIReady: () => void;
+    ReactNativeWebView?: {
+      postMessage: (message: string) => void;
+    };
   }
 }
 
