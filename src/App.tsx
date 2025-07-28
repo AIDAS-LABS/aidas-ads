@@ -89,9 +89,6 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
                 if (event.data === window.YT.PlayerState.ENDED) {
                   setIsFinished(true);
                   onFinish();
-                  // 웹뷰에 완료 메시지 전송
-                  window.parent.postMessage("videoCompleted", "*");
-                  console.log("시청 완료! 웹뷰에 메시지 전송됨");
                 }
               },
             },
@@ -124,9 +121,6 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
             if (event.data === window.YT.PlayerState.ENDED) {
               setIsFinished(true);
               onFinish();
-              // 웹뷰에 완료 메시지 전송
-              window.parent.postMessage("videoCompleted", "*");
-              console.log("시청 완료! 웹뷰에 메시지 전송됨");
             }
           },
         },
@@ -151,6 +145,15 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
       window.removeEventListener("message", handleMessage);
     };
   }, []);
+
+  // isFinished가 true일 때 한 번만 메시지 보내기
+  useEffect(() => {
+    if (isFinished) {
+      window.parent.postMessage("videoCompleted", "*");
+      alert("시청 완료! 웹뷰에 메시지 전송됨");
+      setIsFinished(false);
+    }
+  }, [isFinished]);
 
   // 재생 시작 함수
   const handleStartPlayback = () => {
