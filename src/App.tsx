@@ -21,8 +21,7 @@ const extractVideoId = (url: string): string | null => {
     }
 
     return null;
-  } catch (error) {
-    console.error("유튜브 URL 파싱 오류:", error);
+  } catch {
     return null;
   }
 };
@@ -82,9 +81,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
               disablekb: 1,
             },
             events: {
-              onReady: () => {
-                console.log("플레이어 준비 완료");
-              },
+              onReady: () => {},
               onStateChange: (event: { data: number }) => {
                 if (event.data === window.YT.PlayerState.ENDED) {
                   setIsFinished(true);
@@ -114,9 +111,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
           disablekb: 1,
         },
         events: {
-          onReady: () => {
-            console.log("플레이어 준비 완료");
-          },
+          onReady: () => {},
           onStateChange: (event: { data: number }) => {
             if (event.data === window.YT.PlayerState.ENDED) {
               setIsFinished(true);
@@ -131,10 +126,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
   // postMessage 리스너 추가
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      console.log("postMessage 받음:", event.data);
-
       if (event.data === "startPlayback") {
-        console.log("React Native에서 재생 요청 받음");
         handleStartPlayback();
       }
     };
@@ -149,50 +141,30 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
   // isFinished가 true일 때 한 번만 메시지 보내기
   useEffect(() => {
     if (isFinished) {
-      if (window.ReactNativeWebView) {
-        window.ReactNativeWebView.postMessage("videoCompleted");
-      }
-
-      alert("시청 완료! 웹뷰에 메시지 전송됨");
       setIsFinished(false);
     }
   }, [isFinished]);
 
   // 재생 시작 함수
   const handleStartPlayback = () => {
-    console.log("handleStartPlayback 호출됨");
-    console.log("playerInstanceRef.current:", playerInstanceRef.current);
-    console.log("hasStarted:", hasStarted);
-
     if (playerInstanceRef.current && !hasStarted) {
       setHasStarted(true);
-      console.log("재생 시작 시도...");
       try {
         if (typeof playerInstanceRef.current.playVideo === "function") {
-          console.log("playVideo 함수 호출");
           playerInstanceRef.current.playVideo();
         } else {
-          console.log("playVideo 함수가 아직 준비되지 않음");
           setTimeout(() => {
             if (
               playerInstanceRef.current &&
               typeof playerInstanceRef.current.playVideo === "function"
             ) {
-              console.log("1초 후 playVideo 함수 호출");
               playerInstanceRef.current.playVideo();
-            } else {
-              console.log("1초 후에도 playVideo 함수 없음");
             }
           }, 1000);
         }
-      } catch (error) {
-        console.error("재생 중 오류:", error);
+      } catch {
+        // 에러 무시
       }
-    } else {
-      console.log("재생 조건 불만족:", {
-        hasPlayer: !!playerInstanceRef.current,
-        hasStarted: hasStarted,
-      });
     }
   };
 
@@ -277,15 +249,12 @@ declare global {
       };
     };
     onYouTubeIframeAPIReady: () => void;
-    ReactNativeWebView?: {
-      postMessage: (message: string) => void;
-    };
   }
 }
 
 function App() {
   const handleVideoFinish = () => {
-    console.log("동영상 시청이 완료되었습니다!");
+    // 완료 처리
   };
 
   return (
