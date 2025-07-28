@@ -158,10 +158,16 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
 
   // 재생 시작 함수
   const handleStartPlayback = () => {
+    console.log("handleStartPlayback 호출됨");
+    console.log("playerInstanceRef.current:", playerInstanceRef.current);
+    console.log("hasStarted:", hasStarted);
+
     if (playerInstanceRef.current && !hasStarted) {
       setHasStarted(true);
+      console.log("재생 시작 시도...");
       try {
         if (typeof playerInstanceRef.current.playVideo === "function") {
+          console.log("playVideo 함수 호출");
           playerInstanceRef.current.playVideo();
         } else {
           console.log("playVideo 함수가 아직 준비되지 않음");
@@ -170,13 +176,21 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
               playerInstanceRef.current &&
               typeof playerInstanceRef.current.playVideo === "function"
             ) {
+              console.log("1초 후 playVideo 함수 호출");
               playerInstanceRef.current.playVideo();
+            } else {
+              console.log("1초 후에도 playVideo 함수 없음");
             }
           }, 1000);
         }
       } catch (error) {
         console.error("재생 중 오류:", error);
       }
+    } else {
+      console.log("재생 조건 불만족:", {
+        hasPlayer: !!playerInstanceRef.current,
+        hasStarted: hasStarted,
+      });
     }
   };
 
