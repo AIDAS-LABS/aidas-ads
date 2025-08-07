@@ -1,4 +1,13 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+
+// ReactNativeWebView 타입 선언
+declare global {
+  interface Window {
+    ReactNativeWebView?: {
+      postMessage: (message: string, targetOrigin?: string) => void;
+    };
+  }
+}
 
 const AnimalRun = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
