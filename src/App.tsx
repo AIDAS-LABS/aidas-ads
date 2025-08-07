@@ -99,6 +99,7 @@ const AnimalRun = () => {
         title="Unity Game"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
       />
       <button
         onClick={sendPointToUnity}
